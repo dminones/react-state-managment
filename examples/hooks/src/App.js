@@ -1,57 +1,48 @@
-import React, { useEffect, useState } from "react";
-import Web3Provider, { Connectors, useWeb3Context } from "web3-react";
-import "./App.css";
+import React from "react";
+import Web3Provider, { Connectors } from "web3-react";
+import styled from "styled-components";
+
+import TokenList from "./components/TokenList";
+import ConnectWalletButton from "./components/ConnectWalletButton";
 
 const { InjectedConnector } = Connectors;
 const MetaMask = new InjectedConnector({ supportedNetworks: [1, 4] });
 
-// This component must be a child of <App> to have access to the appropriate context
-function MyComponent() {
-  const context = useWeb3Context();
-  const [loading, setLoading] = useState();
-
-  useEffect(() => {
-    if (context.active) {
-      setLoading(false);
-    }
-  }, [context]);
-
-  if (!context.active && !context.error && !loading) {
-    // loading
-    return (
-      <a
-        className="App-link"
-        href="#"
-        onClick={() => {
-          setLoading(true);
-          context.setFirstValidConnector(["MetaMask"]);
-        }}
-      >
-        Connect Metamask
-      </a>
-    );
-  } else if (!context.active && !context.error) {
-    return <div>Loading...</div>;
-  } else if (context.error) {
-    //error
-    return <div>{context.error}</div>;
-  } else {
-    // success
-    return <div>Account: {context.account}</div>;
+const tokens = [
+  {
+    address: "0x"
+  },
+  {
+    address: "0x"
   }
-}
+];
+
+const Container = styled.div`
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const Header = styled.header`
+  background-color: black;
+`
+
+const H1 = styled.h1`
+  color: white;
+`
 
 function App() {
   return (
     <Web3Provider connectors={{ MetaMask }} libraryName="ethers.js">
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <MyComponent />
-        </header>
-      </div>
+      <Header>
+        <Container>
+          <H1>Tokens</H1>
+          <ConnectWalletButton />
+        </Container>
+      </Header>
+      <Container>
+        <TokenList tokens={tokens} />
+      </Container>
     </Web3Provider>
   );
 }
